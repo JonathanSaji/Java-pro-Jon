@@ -19,6 +19,8 @@ public class RPSTOGETHER extends JFrame implements ActionListener {
     private JLabel player;
     private int matchWinner = 0;
     private int rounds = 0;
+    String comChoice;
+    String result;
 
     //for first panel popup
     private JPanel intro;
@@ -28,6 +30,8 @@ public class RPSTOGETHER extends JFrame implements ActionListener {
     private JButton SETNAMESButton;
     private JLabel MatchWinnerLabel;
     private JButton exit_btn;
+    private JButton howToPlayButton;
+    private JPanel tutorial;
     String name_two;
     String name;
     String AI_name;
@@ -46,26 +50,29 @@ public class RPSTOGETHER extends JFrame implements ActionListener {
     private JButton scissors_player2;
     private JLabel player2_label_pvp;
     private JButton exitBTNPVP;
-    private JLabel pvp_rounds;
     private int PVP_rounds = 0;
     private String pvp_choice_player1, pvp_choice_player2;
 
 
     public RPSTOGETHER(){
         frame = new JFrame();
+        setTitle("RPS GAME (By Jonathan Saji)");
         setVisible(true);
-        setSize(1920,1080);
+        setExtendedState(frame.getExtendedState() | JFrame.MAXIMIZED_BOTH);
         setContentPane(RPS);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         intro.setVisible(true);
         AI.setVisible(false);
         PVP.setVisible(false);
+        tutorial.setVisible(false);
+
 
         //for intro popup
         SETNAMESButton.addActionListener(this);
         exit_btn.addActionListener(this);
         playerVSAIButton.addActionListener(this);
         playerVSPlayerButton.addActionListener(this);
+        howToPlayButton.addActionListener(this);
 
         //ai popup
         rockButton.addActionListener(this);
@@ -86,6 +93,9 @@ public class RPSTOGETHER extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        if(e.getSource() == howToPlayButton){
+            tutorial.setVisible(true);
+        }
         if (e.getSource() == SETNAMESButton) {
             name = JOptionPane.showInputDialog(null, "What is Your Name?");
             playerVSAIButton.setText(name + " VS " + "AI");
@@ -111,60 +121,63 @@ public class RPSTOGETHER extends JFrame implements ActionListener {
     if(e.getSource() == playerVSAIButton){
         this.rounds = 0;
         this.matchWinner = 0;
-        intro.setVisible(false);
         AI.setVisible(true);
+        intro.setVisible(false);
+        tutorial.setVisible(false);
     }
         if(e.getSource() == rockButton){
             usersChoice = "Rock";
+            addAIRounds();
         }
         else if(e.getSource()== paperButton){
             usersChoice = "Paper";
+            addAIRounds();
         }
         else if(e.getSource() == scissorsButton){
             usersChoice = "Scissors";
+            addAIRounds();
         }
         else if(e.getSource() == EXITButton){
             AI.setVisible(false);
             intro.setVisible(true);
         }
         if(usersChoice != null) {
-            String comChoice = getComChoice();
+            comChoice = getComChoice();
 
-            String result = winner(usersChoice, comChoice);
+            result = winner(usersChoice, comChoice);
 
             resultlabel.setText("Your Choice: " + usersChoice + " ||Computer's Choice: " + comChoice + " ||Result:" + result);
+        }
 
            if(rounds == 3) {
-               resultlabel.setText("Result:");
+               rounds = 0;
                AI.setVisible(false);
                intro.setVisible(true);
+
+               if (matchWinner < 0) {
+                   if (AI_name != null) {
+                       MatchWinnerLabel.setText("Match Winner: " + AI_name);
+                   } else {
+                       MatchWinnerLabel.setText(("Match Winner: AI"));
+                   }
+               } else {
+                   if (name != null) {
+                       MatchWinnerLabel.setText(("Match Winner: " + name));
+                   } else {
+                       MatchWinnerLabel.setText(("Match Winner: Player"));
+                   }
+               }
            }
-            if(matchWinner < 0 ){
-                if(AI_name != null){
-                    MatchWinnerLabel.setText("Match Winner: " + AI_name);
-                }
-                else{
-                    MatchWinnerLabel.setText(("Match Winner: AI"));
-                }
-            }
-            else{
-                if(name != null){
-                    MatchWinnerLabel.setText(("Match Winner: " + name ));
-                }
-                else{
-                    MatchWinnerLabel.setText(("Match Winner: Player"));
-                }
-            }
-        }
+
         //beginning of PVP
         if(e.getSource() == playerVSPlayerButton){
-           PVP_rounds = 0;
-            matchWinner = 0;
+            tutorial.setVisible(false);
             intro.setVisible(false);
             PVP.setVisible(true);
             player1.setVisible(true);
             player2.setVisible(false);
-
+            this.PVP_rounds = 0;
+            this.matchWinner = 0;
         }
         if(e.getSource() == rock_player1){
             pvp_choice_player1 = "Rock";
@@ -219,8 +232,10 @@ public class RPSTOGETHER extends JFrame implements ActionListener {
                 resultlabel_pvp.setText("Player 1's Choice: " + pvp_choice_player1 + name_two + pvp_choice_player2 + " ||Result: Player 1 " + result_pvp);
             }
             if(PVP_rounds == 3) {
+                this.PVP_rounds = 0;
                 PVP.setVisible(false);
                 intro.setVisible(true);
+                AI.setVisible(false);
                 if (matchWinner > 0) {
                     if (name != null) {
                         MatchWinnerLabel.setText("Match Winner: " + name);
@@ -253,26 +268,27 @@ public class RPSTOGETHER extends JFrame implements ActionListener {
         } else if ((uC.equals("Rock") && cC.equals("Scissors")) ||
                 (uC.equals("Paper") && cC.equals("Rock")) ||
                 (uC.equals("Scissors") && cC.equals("Paper"))) {
-            rounds++;
-            matchWinner++;
-            num_rounds.setText("Rounds: " + rounds);
-            pvp_rounds.setText("Rounds: " + rounds);
+            this.matchWinner++;
             return " won!";
         } else {
-            this.rounds++;
             this.matchWinner--;
-            num_rounds.setText("Rounds: " + rounds);
-            pvp_rounds.setText("Rounds: " + PVP_rounds);
             return " lost!";
         }
     }
 
     public void addPVPRounds(){
         if(!pvp_choice_player1.equals(pvp_choice_player2)){
-            PVP_rounds++;
+            this.PVP_rounds++;
         }
     }
 
+
+    public void addAIRounds(){
+        if(!usersChoice.equals(getComChoice())){
+            this.rounds++;
+            this.num_rounds.setText("Rounds: " + rounds);
+        }
+    }
     public static void main(String[] args){
         new RPSTOGETHER();
     }//main
