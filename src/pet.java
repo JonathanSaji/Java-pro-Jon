@@ -1,24 +1,28 @@
+import javax.swing.*;
+
 public class pet {
     private int happiness;
     private int tiredness;
     private int hunger;
 
     public pet(){
-       this.happiness = 5;
+       this.happiness = 3;
        this.hunger = 0;
        this.tiredness = 0;
     }
     public pet(int hap,int tired, int hung){
-
         hunger = hung;
         happiness = hap;
         tiredness = tired;
-
     }
 
     public void feed(){
-        if(hunger !=1) {
+        if(hunger > 0 || happiness < 5) {
             hunger -= 1;
+            happiness -=1;
+        }
+        else{
+            JOptionPane.showMessageDialog(null,"Hunger Sufficient");
         }
     }
     public void play(){
@@ -27,14 +31,16 @@ public class pet {
             tiredness += 1;
             happiness += 1;
         }
+        else{
+                JOptionPane.showMessageDialog(null,"Happiness Sufficient");
+            }
     }
     public void sleep(){
-        if(hunger!=1 && tiredness !=1) {
             hunger += 1;
             tiredness -= 1;
-        }
-        else{
-            System.out.println("Sleep Sufficient");
+            if(tiredness == 0){
+            JOptionPane.showMessageDialog(null,"Sleep Sufficient");
+
         }
     }
 
@@ -62,7 +68,7 @@ public class pet {
     }
 
     public boolean checkIfDead(){
-        if(hunger > 5 || tiredness > 5 || happiness < 0){
+        if(getHunger() > 5 || getTiredness() > 5 || getHappiness() < 0){
             return true;
         }
         else{
