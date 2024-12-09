@@ -3,7 +3,7 @@ import javax.swing.*;
 import java.awt.event.*;
 
 public class GameGUI extends JFrame implements ActionListener{
-    pet base_pet = new pet(5,0,0);
+    pet base_pet = new pet();
 
 
     //intro menu
@@ -20,15 +20,17 @@ public class GameGUI extends JFrame implements ActionListener{
     private ImageIcon start_image = new ImageIcon(getClass().getResource("start_image.jpg"));
     private JButton SetName;
     private JLabel petStats;
-    String pet_name;
+    String pet_name = "Pet";
     int choice;
-    String store;
     private JButton StartJourney;
     //e
 
 
     //play menu
-        JLabel petPlay_Stats;
+        JButton feed;
+        JButton play;
+        JButton sleep;
+        boolean checkIfDead;
     //e
 
     //setting font
@@ -83,20 +85,45 @@ public class GameGUI extends JFrame implements ActionListener{
                 if(pet_name!=null){
                     StartJourney.setText("<html>Start Your "+pet_name+"'s"+"<br>Journey");
                 }
+                int pet_image = JOptionPane.showConfirmDialog(null,"Do you want to set a image for your Pet?");
+                if(pet_image == JOptionPane.YES_OPTION){
+                    ImageSetter();
+
+                    JLabel image = new JLabel();
+
+                }
                 choice =JOptionPane.showConfirmDialog(null,"Do You want to Set Your Pets Base Stats?");
-                if(choice == JOptionPane.YES_NO_OPTION){
+                if(choice == JOptionPane.YES_OPTION){
                     base_pet.setHappiness(JPaneSetter("happiness"));
                     base_pet.setHunger(JPaneSetter("hunger"));
                     base_pet.setTiredness(JPaneSetter("tiredness"));
                     petStats.setText(base_pet.toString());
-                    petPlay_Stats = new JLabel(base_pet.toString());
-
                 }
-
                 break;
             case "StartJourney":
                 StartJourney.setVisible(false);
                 SetName.setVisible(false);
+                play.setVisible(true);
+                sleep.setVisible(true);
+                feed.setVisible(true);
+                break;
+            case "play":
+                base_pet.play();
+                petStats.setText(base_pet.toString());
+                checkIfDead = base_pet.checkIfDead();
+                checkDeath();
+                break;
+            case "sleep":
+                base_pet.sleep();
+                petStats.setText(base_pet.toString());
+                checkIfDead = base_pet.checkIfDead();
+                checkDeath();
+                break;
+            case "feed":
+                base_pet.feed();
+                petStats.setText(base_pet.toString());
+                checkIfDead = base_pet.checkIfDead();
+                checkDeath();
                 break;
         }
     }
@@ -129,6 +156,42 @@ public class GameGUI extends JFrame implements ActionListener{
         StartJourney.addActionListener(this);
         StartJourney.setActionCommand("StartJourney");
 
+        feed = new JButton("Feed Your Pet");
+        feed.setVisible(false);
+        feed.setBounds(600,400,550,550);
+        feed.setSize(800,100);
+        feed.setFont(f);
+        feed.setBackground(new Color(0, 0, 0, 255));
+        feed.setForeground(new Color(255, 255, 255, 255));
+        this.add(feed);
+
+        feed.addActionListener(this);
+        feed.setActionCommand("play");
+
+        play = new JButton("Play With Your Pet");
+        play.setVisible(false);
+        play.setBounds(600,300,550,550);
+        play.setSize(800,100);
+        play.setFont(f);
+        play.setBackground(new Color(0, 0, 0, 255));
+        play.setForeground(new Color(255, 255, 255, 255));
+        this.add(play);
+
+        play.addActionListener(this);
+        play.setActionCommand("play");
+
+        sleep = new JButton("Make Your Pet Sleep");
+        sleep.setVisible(false);
+        sleep.setBounds(600,200,550,550);
+        sleep.setSize(800,100);
+        sleep.setFont(f);
+        sleep.setBackground(new Color(0, 0, 0, 255));
+        sleep.setForeground(new Color(255, 255, 255, 255));
+        this.add(sleep);
+
+        sleep.addActionListener(this);
+        sleep.setActionCommand("sleep");
+
         petStats = new JLabel(base_pet.toString());
         petStats.setBounds(100,200,550,550);
         petStats.setSize(1100,1000);
@@ -136,25 +199,12 @@ public class GameGUI extends JFrame implements ActionListener{
         petStats.setForeground(new Color(255,255,255,255));
         this.add(petStats);
 
+
+
         //start background
         setBackground(start_background,start_image);
 
         }
-        public GameGUI(int n,int t){
-
-            GUICreator();
-            petPlay_Stats = new JLabel();
-            petPlay_Stats.setBounds(100,200,550,550);
-            petPlay_Stats.setSize(1100,1000);
-            petPlay_Stats.setFont(f);
-            petPlay_Stats.setForeground(new Color(255,255,255,255));
-            this.add(petPlay_Stats);
-
-            exit_button(exit);
-
-            setBackground(start_background,start_image);
-        }
-
 
         public int JPaneSetter(String type){
             String[] Options = { "1","2","3","4","5"};
@@ -219,6 +269,30 @@ public class GameGUI extends JFrame implements ActionListener{
             return 0;
         }
 
+    public int ImageSetter(){
+        String[] Options = { "Golden Retriever","Madagascar Penguins","Lion","Rattle Snake","Rabbit"};
+        int selection= JOptionPane.showOptionDialog(null,"Select For Look For Your Pet","Get Pet Image",0,3,null,Options,Options[0]);
+        switch(selection){
+            case 0:
+                return 1;
+            case 1:
+                return 2;
+            case 2:
+                return 3;
+            case 3:
+                return 4;
+            case 4:
+                return 5;
+        }
+        return 0;
+    }
+
+        public void checkDeath(){
+            if(checkIfDead){
+                new GameGUI();
+                JOptionPane.showMessageDialog(null,"Your Pet Died :(");
+            }
+        }
         public void GUICreator(){
             setSize(1920,1080);
             setLayout(null);
@@ -246,7 +320,5 @@ public class GameGUI extends JFrame implements ActionListener{
             l.setSize(1920,1080);
             add(l);
         }
-            public static void main(String[] args) {
-        new GameGUI();
-    }
+
 }
