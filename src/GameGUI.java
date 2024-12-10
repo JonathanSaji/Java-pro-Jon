@@ -313,8 +313,4 @@ public class GameGUI extends JFrame implements ActionListener{
         l.setSize(1920,1080);
         add(l);
     }
-    public static void main(String[] args) {
-        new GameGUI();
-    }
-
 }
