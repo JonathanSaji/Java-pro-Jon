@@ -20,17 +20,19 @@ public class GameGUI extends JFrame implements ActionListener{
     private ImageIcon start_image = new ImageIcon(getClass().getResource("start_image.jpg"));
     private JButton SetName;
     private JLabel petStats;
-    String pet_name = "Pet";
+    String pet_name;
     int choice;
     private JButton StartJourney;
-    //e
+        //e
 
 
     //play menu
-        JButton feed;
-        JButton play;
-        JButton sleep;
-        boolean checkIfDead;
+    JButton feed;
+    JButton play;
+    JButton sleep;
+    boolean checkIfDead;
+    JLabel pet_status;
+
     //e
 
     //setting font
@@ -42,7 +44,7 @@ public class GameGUI extends JFrame implements ActionListener{
         setLayout(null);
 
 
-        intro = new JLabel("<html>Welcome To"+ "<br>The Sim");
+        intro = new JLabel("<html>Welcome To"+ "<br>The Pet Sim");
         intro.setBounds(100, 550, 550, 550);
         intro.setFont(f);
         intro.setForeground(new Color(255, 255, 255));
@@ -81,23 +83,23 @@ public class GameGUI extends JFrame implements ActionListener{
                 new GameGUI(1);
                 break;
             case "SetName":
-                pet_name = JOptionPane.showInputDialog("What is Your Pets Name?");
+                int pet_choice = JOptionPane.showConfirmDialog(null,"Do You Want to Name Your Pet?");
+                if(pet_choice == JOptionPane.YES_OPTION) {
+                    pet_name = JOptionPane.showInputDialog("What is Your Pets Name?");
+                }
                 if(pet_name!=null){
-                    StartJourney.setText("<html>Start Your "+pet_name+"'s"+"<br>Journey");
+                    base_pet.setName(pet_name);
+                    StartJourney.setText("<html>Start "+pet_name+"'s"+"<br>Journey");
+                    petStats.setText(base_pet.toString());
+                    pet_status.setText(base_pet.statusCheck());
                 }
-                int pet_image = JOptionPane.showConfirmDialog(null,"Do you want to set a image for your Pet?");
-                if(pet_image == JOptionPane.YES_OPTION){
-                    ImageSetter();
-
-                    JLabel image = new JLabel();
-
-                }
-                choice =JOptionPane.showConfirmDialog(null,"Do You want to Set Your Pets Base Stats?");
+                choice = JOptionPane.showConfirmDialog(null,"Do You want to Set Your Pets Base Stats?");
                 if(choice == JOptionPane.YES_OPTION){
                     base_pet.setHappiness(JPaneSetter("happiness"));
                     base_pet.setHunger(JPaneSetter("hunger"));
                     base_pet.setTiredness(JPaneSetter("tiredness"));
                     petStats.setText(base_pet.toString());
+                    pet_status.setText(base_pet.statusCheck());
                 }
                 break;
             case "StartJourney":
@@ -111,19 +113,24 @@ public class GameGUI extends JFrame implements ActionListener{
                 base_pet.play();
                 petStats.setText(base_pet.toString());
                 checkIfDead = base_pet.checkIfDead();
+                pet_status.setText(base_pet.statusCheck());
                 checkDeath();
+
                 break;
             case "sleep":
                 base_pet.sleep();
                 petStats.setText(base_pet.toString());
                 checkIfDead = base_pet.checkIfDead();
                 checkDeath();
+                pet_status.setText(base_pet.statusCheck());
+
                 break;
             case "feed":
                 base_pet.feed();
                 petStats.setText(base_pet.toString());
                 checkIfDead = base_pet.checkIfDead();
                 checkDeath();
+                pet_status.setText(base_pet.statusCheck());
                 break;
         }
     }
@@ -131,10 +138,15 @@ public class GameGUI extends JFrame implements ActionListener{
     public GameGUI(int n){
         GUICreator();
 
+        pet_status = new JLabel(base_pet.statusCheck());
+        pet_status.setBounds(1100,250,1000,1000);
+        pet_status.setFont(f);
+        pet_status.setBackground(new Color(0, 0, 0, 0));
+        pet_status.setForeground(new Color(255, 255, 255, 255));
+        this.add(pet_status);
         //setter name
-        SetName = new JButton("Set Name Of Your Pet");
-        SetName.setBounds(100,250,550,550);
-        SetName.setSize(800,100);
+        SetName = new JButton("Set Stats Of Your Pet");
+        SetName.setBounds(100,250,800,100);
         SetName.setFont(f);
         SetName.setBackground(new Color(0, 0, 0, 255));
         SetName.setForeground(new Color(255, 255, 255, 255));
@@ -166,7 +178,7 @@ public class GameGUI extends JFrame implements ActionListener{
         this.add(feed);
 
         feed.addActionListener(this);
-        feed.setActionCommand("play");
+        feed.setActionCommand("feed");
 
         play = new JButton("Play With Your Pet");
         play.setVisible(false);
@@ -199,126 +211,110 @@ public class GameGUI extends JFrame implements ActionListener{
         petStats.setForeground(new Color(255,255,255,255));
         this.add(petStats);
 
-
-
         //start background
         setBackground(start_background,start_image);
 
-        }
+    }
 
-        public int JPaneSetter(String type){
-            String[] Options = { "1","2","3","4","5"};
-            int selection= JOptionPane.showOptionDialog(null,"Select for "+type,"Get Base Stats",0,3,null,Options,Options[0]);
-            switch(selection){
-                case 0:
-                    if(type.equals("happiness")){
-                        return 1;
-                    }
-                    else if(type.equals("tiredness")) {
-                        return 1;
-                    }
-                    else if(type.equals("hunger")) {
-                        return 1;
-                    }
-                    break;
-                case 1:
-                    if(type.equals("happiness")) {
-                        return 2;
-                    }
-                    else if(type.equals("tiredness")) {
-                        return 2;
-                    }
-                    else if(type.equals("hunger")) {
-                        return 2;
-                    }
-                    break;
-                case 2:
-                    if(type.equals("happiness")) {
-                        return 3;
-                    }
-                    else if(type.equals("tiredness")) {
-                        return 3;
-                    }
-                    else if(type.equals("hunger")) {
-                        return 3;
-                    }
-                    break;
-                case 3:
-                    if(type.equals("happiness")) {
-                        return 4;
-                    }
-                    else if(type.equals("tiredness")) {
-                        return 4;
-                    }
-                    else if(type.equals("hunger")) {
-                        return 4;
-                    }
-                    break;
-                case 4:
-                    if(type.equals("happiness")) {
-                        return 5;
-                    }
-                    else if(type.equals("tiredness")) {
-                        return 5;
-                    }
-                    else if(type.equals("hunger")) {
-                        return 5;
-                    }
-                    break;
-            }
-            return 0;
-        }
-
-    public int ImageSetter(){
-        String[] Options = { "Golden Retriever","Madagascar Penguins","Lion","Rattle Snake","Rabbit"};
-        int selection= JOptionPane.showOptionDialog(null,"Select For Look For Your Pet","Get Pet Image",0,3,null,Options,Options[0]);
+    public int JPaneSetter(String type){
+        String[] Options = { "1","2","3","4","5"};
+        int selection= JOptionPane.showOptionDialog(null,"Select for "+type,"Get Base Stats",0,3,null,Options,Options[0]);
         switch(selection){
             case 0:
-                return 1;
+                if(type.equals("happiness")){
+                    return 1;
+                }
+                else if(type.equals("tiredness")) {
+                    return 1;
+                }
+                else if(type.equals("hunger")) {
+                    return 1;
+                }
+                break;
             case 1:
-                return 2;
+                if(type.equals("happiness")) {
+                    return 2;
+                }
+                else if(type.equals("tiredness")) {
+                    return 2;
+                }
+                else if(type.equals("hunger")) {
+                    return 2;
+                }
+                break;
             case 2:
-                return 3;
+                if(type.equals("happiness")) {
+                    return 3;
+                }
+                else if(type.equals("tiredness")) {
+                    return 3;
+                }
+                else if(type.equals("hunger")) {
+                    return 3;
+                }
+                break;
             case 3:
-                return 4;
+                if(type.equals("happiness")) {
+                    return 4;
+                }
+                else if(type.equals("tiredness")) {
+                    return 4;
+                }
+                else if(type.equals("hunger")) {
+                    return 4;
+                }
+                break;
             case 4:
-                return 5;
+                if(type.equals("happiness")) {
+                    return 5;
+                }
+                else if(type.equals("tiredness")) {
+                    return 5;
+                }
+                else if(type.equals("hunger")) {
+                    return 5;
+                }
+                break;
         }
         return 0;
     }
 
-        public void checkDeath(){
-            if(checkIfDead){
-                new GameGUI();
-                JOptionPane.showMessageDialog(null,"Your Pet Died :(");
-            }
+
+    public void checkDeath(){
+        if(checkIfDead){
+            new GameGUI();
+            JOptionPane.showMessageDialog(null,"Your Pet Died :(");
         }
+    }
         public void GUICreator(){
-            setSize(1920,1080);
-            setLayout(null);
-            setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
-            setVisible(true);
-            setDefaultCloseOperation(EXIT_ON_CLOSE);
-        }
+        setSize(1920,1080);
+        setLayout(null);
+        setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
+        setVisible(true);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+    }
 
 
-        public void exit_button(JButton e){
-            e = new JButton("Click To Exit");
-            e.setBounds(100,100,550,550);
-            e.setSize(500,100);
-            e.setFont(f);
-            e.setBackground(new Color(0, 0, 0, 255));
-            e.setForeground(new Color(255, 255, 255, 255));
-            this.add(e);
+    public void exit_button(JButton e){
+        e = new JButton("Click To Exit");
+        e.setBounds(100,100,550,550);
+        e.setSize(500,100);
+        e.setFont(f);
+        e.setBackground(new Color(0, 0, 0, 255));
+        e.setForeground(new Color(255, 255, 255, 255));
+        this.add(e);
 
-            e.addActionListener(this);
-            e.setActionCommand("exit");
-        }
+        e.addActionListener(this);
+        e.setActionCommand("exit");
+    }
 
-        public void setBackground(JLabel l, ImageIcon i){
-            l = new JLabel(i);
-            l.setSize(1920,1080);
-            add(l);
-        }
+    public void setBackground(JLabel l, ImageIcon i){
+        l = new JLabel(i);
+        l.setSize(1920,1080);
+        add(l);
+    }
+    public static void main(String[] args) {
+        new GameGUI();
+    }
 
 }
